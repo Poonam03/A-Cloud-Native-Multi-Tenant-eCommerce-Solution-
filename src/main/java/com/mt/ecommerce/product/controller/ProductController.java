@@ -11,10 +11,13 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("mt/product")
-@AllArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
     public void getProduct() {

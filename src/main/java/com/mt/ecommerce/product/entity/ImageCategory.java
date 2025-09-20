@@ -7,18 +7,41 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "image_category_mt_t")
-@Data
 public class ImageCategory {
 
     @Id
+    @Column(name = "identification")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id")
-    @Column(name = "category_id", nullable = false)
     private Category category;
 
     @Column(name = "image_id", nullable = false)
     private UUID imageId;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public UUID getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(UUID imageId) {
+        this.imageId = imageId;
+    }
 }

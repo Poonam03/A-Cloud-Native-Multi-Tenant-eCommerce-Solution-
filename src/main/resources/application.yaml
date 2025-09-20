@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb # Connect to an in-memory H2 database named 'testdb'
+    driverClassName: org.h2.Driver
+    username: sa
+    password: password
+  h2:
+    console:
+      enabled: true # Enable the H2 console for web-based access
+      path: /h2-console # Path to access the H2 console

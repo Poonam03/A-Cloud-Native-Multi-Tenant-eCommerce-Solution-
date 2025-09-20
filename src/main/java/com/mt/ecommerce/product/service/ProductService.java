@@ -6,7 +6,6 @@ import com.mt.ecommerce.product.exception.ProductNotFoundException;
 import com.mt.ecommerce.product.model.ProductBO;
 import com.mt.ecommerce.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -15,10 +14,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class ProductService {
 
     private final ProductRepository productRepository;
+
+    public ProductService(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
 
 
     @Transactional
@@ -53,7 +55,7 @@ public class ProductService {
 
                     productBO.getImages().forEach(image -> {
                         ImageProduct imageProduct = new ImageProduct();
-                        imageProduct.setId(java.util.UUID.randomUUID());
+                        imageProduct.setIdentification(java.util.UUID.randomUUID());
                         imageProduct.setImageId(image.getId());
                         imageProduct.setProduct(product);
                         imageProducts.add(imageProduct);
@@ -85,7 +87,7 @@ public class ProductService {
         if (productBO.getImages() != null) {
             productBO.getImages().forEach(image -> {
                 ImageProduct imageProduct = new ImageProduct();
-                imageProduct.setId(UUID.randomUUID());
+                imageProduct.setIdentification(UUID.randomUUID());
                 imageProduct.setImageId(image.getId());
                 imageProduct.setProduct(product);
                 imageProducts.add(imageProduct);

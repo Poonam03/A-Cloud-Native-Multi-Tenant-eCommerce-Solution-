@@ -14,7 +14,7 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
-    List<Product> findByVendorIdAndCategoryId(UUID vendorId, UUID categoryId, Pageable pageable);
+//    List<Product> findByVendorIdAndCategoryId(UUID vendorId, UUID categoryId, Pageable pageable);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Product> findById(UUID id);
