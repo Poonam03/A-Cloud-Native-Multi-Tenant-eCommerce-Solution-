@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("mt/product")
+@RequestMapping("/product")
 public class ProductController {
 
     private final ProductService productService;

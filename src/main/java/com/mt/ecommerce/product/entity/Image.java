@@ -19,6 +19,9 @@ public class Image {
 
     private String altText;
 
+    @Column(name = "vendor_id", nullable = false)
+    private UUID vendorId;
+
     @Column(name = "created_time")
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -65,5 +68,13 @@ public class Image {
 
     public void setModifiedAt(LocalDateTime modifiedAt) {
         this.modifiedAt = modifiedAt;
+    }
+
+    public UUID getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(UUID vendorId) {
+        this.vendorId = vendorId;
     }
 }

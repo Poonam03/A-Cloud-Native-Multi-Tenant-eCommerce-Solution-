@@ -11,6 +11,17 @@ public class ImageBO {
 
     private String altText;
 
+    private UUID vendorId;
+
+
+    public UUID getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(UUID vendorId) {
+        this.vendorId = vendorId;
+    }
+
     public UUID getId() {
         return id;
     }
