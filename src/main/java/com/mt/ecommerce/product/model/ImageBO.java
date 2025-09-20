@@ -11,15 +11,15 @@ public class ImageBO {
 
     private String altText;
 
-    private UUID vendorId;
+    private String userId;
 
 
-    public UUID getVendorId() {
-        return vendorId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setVendorId(UUID vendorId) {
-        this.vendorId = vendorId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public UUID getId() {

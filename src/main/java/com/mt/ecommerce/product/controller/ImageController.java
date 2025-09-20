@@ -7,6 +7,10 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,13 +42,14 @@ public class ImageController {
 
 
     @PostMapping("")
-    public void uploadImage(@RequestParam("file") MultipartFile file, @RequestParam("altText") String altText, @RequestParam("vendorId") String vendorId) {
+    @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
+    public void uploadImage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("file") MultipartFile file, @RequestParam("altText") String altText) {
         try {
             if (!file.isEmpty()) {
                 String fileName = file.getOriginalFilename();
-                File dest = new File(UPLOAD_DIR +"\\"+ fileName);
+                File dest = new File(UPLOAD_DIR + "\\" + fileName);
                 file.transferTo(dest);
-                this.imageService.createImage(fileName, altText, java.util.UUID.fromString(vendorId));
+                this.imageService.createImage(fileName, altText, userDetails.getUsername());
             } else {
                 throw new ImageUploadException("Image is empty. Pls try again");
             }
@@ -54,13 +59,14 @@ public class ImageController {
     }
 
     @PutMapping(value = "")
-    public void updateImage(@RequestParam("file") MultipartFile file, @RequestParam("altText") String altText, @RequestParam("vendorId") String vendorId) {
+    @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
+    public void updateImage(@RequestParam("file") MultipartFile file, @RequestParam("altText") String altText, @RequestParam("iamgeID") String iamgeID) {
         try {
             if (!file.isEmpty()) {
                 String fileName = file.getOriginalFilename();
-                File dest = new File(UPLOAD_DIR + "\\" +fileName);
+                File dest = new File(UPLOAD_DIR + "\\" + fileName);
                 file.transferTo(dest);
-                this.imageService.updateImage(java.util.UUID.fromString(vendorId), altText, fileName);
+                this.imageService.updateImage(java.util.UUID.fromString(iamgeID), altText, fileName);
             } else {
                 throw new ImageUploadException("Image is empty. Pls try again");
             }
@@ -70,16 +76,17 @@ public class ImageController {
     }
 
     @DeleteMapping("")
+    @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     public void deleteImage(@RequestParam("id") String id, @RequestParam("imageName") String imageName) throws IOException {
         this.imageService.deleteImage(java.util.UUID.fromString(id), Paths.get(UPLOAD_DIR, imageName));
     }
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<ImageBO> getImages(@RequestParam("vendorId") String vendorId) {
-        return this.imageService.findAll(java.util.UUID.fromString(vendorId));
+    public List<ImageBO> getImages(@AuthenticationPrincipal UserDetails userDetails) {
+        return this.imageService.findAll(userDetails.getUsername());
     }
 
-    @GetMapping("/display/{imageName}")
+    @GetMapping("/unsecured/display/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable("imageName") String imageName) throws IOException {
         Path imagePath = Paths.get(UPLOAD_DIR, imageName);
         if (Files.exists(imagePath)) {

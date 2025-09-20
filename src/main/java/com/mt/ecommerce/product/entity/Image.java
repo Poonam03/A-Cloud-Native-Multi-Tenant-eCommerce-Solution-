@@ -19,8 +19,8 @@ public class Image {
 
     private String altText;
 
-    @Column(name = "vendor_id", nullable = false)
-    private UUID vendorId;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
     @Column(name = "created_time")
     @CreationTimestamp
@@ -70,11 +70,12 @@ public class Image {
         this.modifiedAt = modifiedAt;
     }
 
-    public UUID getVendorId() {
-        return vendorId;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setVendorId(UUID vendorId) {
-        this.vendorId = vendorId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

@@ -6,7 +6,6 @@ import com.mt.ecommerce.product.model.ImageBO;
 import com.mt.ecommerce.product.repository.ImageRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +25,8 @@ public class ImageService {
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
-    public ImageBO findImage(UUID imageID){
+
+    public ImageBO findImage(UUID imageID) {
         Optional<Image> imageOptional = this.imageRepository.findById(imageID);
         ImageBO imageBO = new ImageBO();
         imageOptional.ifPresent(image -> {
@@ -37,24 +37,26 @@ public class ImageService {
         return imageBO;
     }
 
-    public List<ImageBO> findAll(UUID vendorId){
-        return this.imageRepository.findByVendorId(vendorId)
+    public List<ImageBO> findAll(String userId) {
+        return this.imageRepository.findByUserId(userId)
                 .stream().map(image -> {
                     ImageBO imageBO = new ImageBO();
                     imageBO.setImageUrl(image.getImageUrl());
                     imageBO.setAltText(image.getAltText());
                     imageBO.setId(image.getId());
-                    imageBO.setVendorId(image.getVendorId());
+                    imageBO.setUserId(image.getUserId());
                     return imageBO;
                 }).collect(Collectors.toList());
     }
 
-    public void createImage(String imageUrl, String altText, UUID vendorId) {
-        //TODO: update the code to save the image to S3 bucket
+    public void createImage(String imageUrl, String altText, String userId) {
+        if(this.imageRepository.findByUserId(userId).size() >= 15) {
+            throw new ImageUploadException("You can upload maximum 15 images");
+        }
         Image image = new Image();
         image.setImageUrl(imageUrl);
         image.setAltText(altText);
-        image.setVendorId(vendorId);
+        image.setUserId(userId);
         this.imageRepository.save(image);
     }
 
@@ -79,9 +81,6 @@ public class ImageService {
         this.imageRepository.deleteById(imageID);
         Files.delete(imageUrl);
     }
-
-
-
 
 
 }
