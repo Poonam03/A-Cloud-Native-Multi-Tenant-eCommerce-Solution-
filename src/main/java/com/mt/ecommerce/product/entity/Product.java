@@ -33,8 +33,6 @@ public class Product {
 
     private Double price;
 
-    @Column(name = "image_id")
-    private UUID images;
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageProduct> imageProducts;
 
