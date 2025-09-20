@@ -68,12 +68,12 @@ public class ProductService {
 
 
     @Transactional
-    public ProductBO saveProduct(ProductBO productBO, UUID vendorId, UUID categoryId) {
+    public ProductBO saveProduct(ProductBO productBO, String userId, UUID categoryId) {
         //TODO: need to check if vendor and category exits
 
         Product product = new Product();
         product.setId(UUID.randomUUID());
-        product.setVendorId(vendorId);
+        product.setUserId(userId);
         product.setCategoryId(categoryId);
         product.setName(productBO.getName());
         product.setSlug(productBO.getSlug());

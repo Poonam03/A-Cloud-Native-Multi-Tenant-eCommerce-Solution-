@@ -3,7 +3,9 @@ package com.mt.ecommerce.product.controller;
 import com.mt.ecommerce.product.model.ProductBO;
 import com.mt.ecommerce.product.service.ProductService;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -18,12 +20,12 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void getProduct() {
 
     }
 
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void getAllProducts(
             @RequestParam(name = "vendorId") String vendorId,
             @RequestParam(name = "categoryId") String categoryId,
@@ -33,22 +35,24 @@ public class ProductController {
 
     }
 
-    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
+    @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProductBO createProduct(
-            @RequestParam(name = "vendorId") String vendorId,
+            @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "categoryId") String categoryId,
             @RequestBody ProductBO productBO
     ) {
-        return this.productService.saveProduct(productBO, UUID.fromString(vendorId), UUID.fromString(categoryId));
+        return this.productService.saveProduct(productBO, userDetails.getUsername(), UUID.fromString(categoryId));
     }
 
-    @PutMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProductBO updateProduct(@RequestBody ProductBO productBO) {
         this.productService.updateProduct(productBO);
         return productBO;
     }
 
-    @DeleteMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes =  MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
+    @DeleteMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteProduct(@RequestParam(name = "id") String id) {
         this.productService.deleteProduct(UUID.fromString(id));
 

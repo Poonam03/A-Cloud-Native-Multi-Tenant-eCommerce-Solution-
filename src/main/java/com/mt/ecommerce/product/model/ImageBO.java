@@ -5,6 +5,9 @@ import java.util.UUID;
 
 public class ImageBO {
 
+    public ImageBO() {
+    }
+
     private UUID id;
 
     private String imageUrl;

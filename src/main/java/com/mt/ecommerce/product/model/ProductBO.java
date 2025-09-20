@@ -5,6 +5,9 @@ import java.util.UUID;
 
 public class ProductBO {
 
+    public ProductBO() {
+    }
+
     private UUID id;
 
     private String name;

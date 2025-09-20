@@ -16,8 +16,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "vendor_id", nullable = false)
-    private UUID vendorId;
+    @Column(name = "user_id", nullable = false)
+    private String userId;
 
     @Column(name = "category_id", nullable = false)
     private UUID categoryId;
@@ -57,12 +57,13 @@ public class Product {
         this.id = id;
     }
 
-    public UUID getVendorId() {
-        return vendorId;
+
+    public String getUserId() {
+        return userId;
     }
 
-    public void setVendorId(UUID vendorId) {
-        this.vendorId = vendorId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public UUID getCategoryId() {
