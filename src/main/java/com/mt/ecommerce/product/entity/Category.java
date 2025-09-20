@@ -2,7 +2,6 @@ package com.mt.ecommerce.product.entity;
 
 
 import jakarta.persistence.*;
-import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 

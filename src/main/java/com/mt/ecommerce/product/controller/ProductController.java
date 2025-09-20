@@ -2,14 +2,13 @@ package com.mt.ecommerce.product.controller;
 
 import com.mt.ecommerce.product.model.ProductBO;
 import com.mt.ecommerce.product.service.ProductService;
-import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@Controller
+@RestController
 @RequestMapping("/product")
 public class ProductController {
 

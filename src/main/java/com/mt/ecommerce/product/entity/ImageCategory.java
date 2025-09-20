@@ -1,7 +1,6 @@
 package com.mt.ecommerce.product.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
 import java.util.UUID;
 

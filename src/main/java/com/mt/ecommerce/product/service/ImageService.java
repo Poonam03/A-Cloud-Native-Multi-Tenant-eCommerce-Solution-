@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,6 +44,7 @@ public class ImageService {
                     imageBO.setImageUrl(image.getImageUrl());
                     imageBO.setAltText(image.getAltText());
                     imageBO.setId(image.getId());
+                    imageBO.setVendorId(image.getVendorId());
                     return imageBO;
                 }).collect(Collectors.toList());
     }
@@ -70,8 +74,10 @@ public class ImageService {
 
     }
 
-    public void deleteImage(UUID imageID) {
+    @Transactional
+    public void deleteImage(UUID imageID, Path imageUrl) throws IOException {
         this.imageRepository.deleteById(imageID);
+        Files.delete(imageUrl);
     }
 
 
