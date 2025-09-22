@@ -24,6 +24,34 @@ public class ProductBO {
 
     private List<ImageBO> imageBOS;
 
+    private UUID vendorId;
+
+    private UUID categoryId;
+
+    public UUID getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(UUID categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public List<ImageBO> getImageBOS() {
+        return imageBOS;
+    }
+
+    public void setImageBOS(List<ImageBO> imageBOS) {
+        this.imageBOS = imageBOS;
+    }
+
+    public UUID getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(UUID vendorId) {
+        this.vendorId = vendorId;
+    }
+
     public UUID getId() {
         return id;
     }

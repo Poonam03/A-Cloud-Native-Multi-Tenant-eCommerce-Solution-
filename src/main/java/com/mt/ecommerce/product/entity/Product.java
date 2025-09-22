@@ -16,8 +16,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @Column(name = "vendor_id", nullable = false)
+    private UUID vendorID;
 
     @Column(name = "category_id", nullable = false)
     private UUID categoryId;
@@ -32,7 +32,7 @@ public class Product {
 
     private Double price;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE,  fetch = FetchType.LAZY)
     private List<ImageProduct> imageProducts;
 
     @Column(name = "quantity")
@@ -48,6 +48,16 @@ public class Product {
     @Column(name = "modified_time")
     private LocalDateTime modifiedAt;
 
+    @Column(name = "modified_by")
+    private String modifiedBy;
+
+    public String getModifiedBy() {
+        return modifiedBy;
+    }
+
+    public void setModifiedBy(String modifiedBy) {
+        this.modifiedBy = modifiedBy;
+    }
 
     public UUID getId() {
         return id;
@@ -58,12 +68,12 @@ public class Product {
     }
 
 
-    public String getUserId() {
-        return userId;
+    public UUID getVendorID() {
+        return vendorID;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setVendorID(UUID vendorID) {
+        this.vendorID = vendorID;
     }
 
     public UUID getCategoryId() {

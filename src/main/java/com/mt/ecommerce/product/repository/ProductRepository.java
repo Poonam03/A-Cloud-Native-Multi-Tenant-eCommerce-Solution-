@@ -2,8 +2,10 @@ package com.mt.ecommerce.product.repository;
 
 import com.mt.ecommerce.product.entity.Product;
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.awt.print.Pageable;
@@ -12,9 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, UUID> {
+public interface ProductRepository extends PagingAndSortingRepository<Product, UUID>, JpaRepository<Product, UUID> {
 
-//    List<Product> findByVendorIdAndCategoryId(UUID vendorId, UUID categoryId, Pageable pageable);
+    List<Product> findByVendorIdAndCategoryId(UUID vendorId, UUID categoryId, PageRequest pageRequest);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Product> findById(UUID id);

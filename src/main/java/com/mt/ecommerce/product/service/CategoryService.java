@@ -97,17 +97,6 @@ public class CategoryService {
             category.setSlug(categoryBO.getSlug());
             category.setDescription(categoryBO.getDescription());
             category.setActive(categoryBO.isActive());
-            List<ImageCategory> imageCategories = new ArrayList<>();
-            if (categoryBO.getImageBOS() != null && !categoryBO.getImageBOS().isEmpty()) {
-                categoryBO.getImageBOS().forEach(imageBO -> {
-                    ImageCategory imageCategory = new ImageCategory();
-                    imageCategory.setId(UUID.randomUUID());
-                    imageCategory.setImageId(imageBO.getId());
-                    imageCategory.setCategory(category);
-                    imageCategories.add(imageCategory);
-                });
-            }
-            category.setIamges(imageCategories);
             this.categoryRepository.save(category);
         } else {
             throw new CategoryNotFoundException("Category is not there in DB for this vendor");

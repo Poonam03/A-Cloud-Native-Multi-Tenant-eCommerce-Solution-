@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,34 +21,29 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void getProduct() {
-
-    }
-
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void getAllProducts(
+    @GetMapping(value = "/unsecured/all", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProductBO> getAllProducts(
             @RequestParam(name = "vendorId") String vendorId,
             @RequestParam(name = "categoryId") String categoryId,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-
+        return this.productService.getProduct(UUID.fromString(vendorId), UUID.fromString(categoryId), page, size);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProductBO createProduct(
             @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam(name = "categoryId") String categoryId,
             @RequestBody ProductBO productBO
     ) {
-        return this.productService.saveProduct(productBO, userDetails.getUsername(), UUID.fromString(categoryId));
+        return this.productService.saveProduct(productBO, userDetails.getUsername());
     }
 
+    @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @PutMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ProductBO updateProduct(@RequestBody ProductBO productBO) {
-        this.productService.updateProduct(productBO);
+    public ProductBO updateProduct(@RequestBody ProductBO productBO,@AuthenticationPrincipal UserDetails userDetails) {
+        this.productService.updateProduct(productBO, userDetails.getUsername());
         return productBO;
     }
 
@@ -55,7 +51,6 @@ public class ProductController {
     @DeleteMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public void deleteProduct(@RequestParam(name = "id") String id) {
         this.productService.deleteProduct(UUID.fromString(id));
-
     }
 
 }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -24,12 +25,13 @@ public class ProductService {
 
 
     @Transactional
-    public void updateProduct(ProductBO productBO) {
+    public void updateProduct(ProductBO productBO, String userName) {
         Optional<Product> productOptional = this.productRepository.findById(productBO.getId());
         if (productOptional.isEmpty()) {
             throw new ProductNotFoundException("Product id not found " + productBO.getId().toString());
         }
         Product product = productOptional.get();
+        product.setModifiedBy(userName);
         Optional.ofNullable(productBO.getQuantity())
                 .ifPresent(quant -> product.setStockQuantity(Integer.parseInt(quant)));
 
@@ -68,13 +70,11 @@ public class ProductService {
 
 
     @Transactional
-    public ProductBO saveProduct(ProductBO productBO, String userId, UUID categoryId) {
-        //TODO: need to check if vendor and category exits
-
+    public ProductBO saveProduct(ProductBO productBO, String userName) {
         Product product = new Product();
         product.setId(UUID.randomUUID());
-        product.setUserId(userId);
-        product.setCategoryId(categoryId);
+        product.setVendorID(productBO.getVendorId());
+        product.setCategoryId(productBO.getCategoryId());
         product.setName(productBO.getName());
         product.setSlug(productBO.getSlug());
         product.setDescription(productBO.getDescription());
@@ -82,7 +82,7 @@ public class ProductService {
         product.setPrice(productBO.getPrice());
         product.setStockQuantity(Integer.parseInt(productBO.getQuantity()));
         product.setActive(true);
-
+        product.setModifiedBy(userName);
         List<ImageProduct> imageProducts = new ArrayList<>();
         if (productBO.getImages() != null) {
             productBO.getImages().forEach(image -> {
@@ -94,19 +94,9 @@ public class ProductService {
             });
         }
         product.setImageProducts(imageProducts);
-
-        this.productRepository.save(product);
-
-        ProductBO productBO1 = new ProductBO();
-        productBO1.setId(product.getId());
-        productBO1.setName(product.getName());
-        productBO1.setSlug(product.getSlug());
-        productBO1.setDescription(product.getDescription());
-        productBO1.setSku(product.getSku());
-        productBO1.setPrice(product.getPrice());
-        productBO1.setQuantity(String.valueOf(product.getStockQuantity()));
-        productBO1.setImages(productBO.getImages());
-        return productBO1;
+        Product product1 = this.productRepository.save(product);
+        productBO.setId(product1.getId());
+        return productBO;
     }
 
     @Transactional
@@ -117,5 +107,37 @@ public class ProductService {
         }
         this.productRepository.delete(productOptional.get());
     }
+
+    public List<ProductBO> getProduct(UUID vendorId, UUID categoryId, int pageNo, int size) {
+        return this.productRepository
+                .findByVendorIdAndCategoryId(vendorId, categoryId, org.springframework.data.domain.PageRequest.of(pageNo, size))
+                .stream()
+                .map(product -> {
+                    ProductBO productBO = new ProductBO();
+                    productBO.setId(product.getId());
+                    productBO.setVendorId(product.getVendorID());
+                    productBO.setCategoryId(product.getCategoryId());
+                    productBO.setName(product.getName());
+                    productBO.setSlug(product.getSlug());
+                    productBO.setDescription(product.getDescription());
+                    productBO.setSku(product.getSku());
+                    productBO.setPrice(product.getPrice());
+                    productBO.setQuantity(String.valueOf(product.getStockQuantity()));
+                    List<com.mt.ecommerce.product.model.ImageBO> imageBOS = product.getImageProducts()
+                            .stream()
+                            .map(imageProduct -> {
+                                com.mt.ecommerce.product.model.ImageBO imageBO = new com.mt.ecommerce.product.model.ImageBO();
+                                imageBO.setId(imageProduct.getImageId());
+                                return imageBO;
+                            })
+                            .collect(Collectors.toList());
+                    productBO.setImages(imageBOS);
+                    return productBO;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
 
 }
