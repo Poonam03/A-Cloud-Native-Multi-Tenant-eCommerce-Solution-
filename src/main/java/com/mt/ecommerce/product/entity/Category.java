@@ -18,8 +18,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "vendor_id", nullable = false)
-    private UUID vendorId;
+    @Column(name = "vendorID", nullable = false)
+    private UUID  vendorID;
 
     private String name;
 
@@ -27,10 +27,7 @@ public class Category {
 
     private String description;
 
-    @Column(name = "parent_category_id")
-    private UUID parentCategoryId;
-
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.MERGE, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ImageCategory> iamges;
 
     private boolean active;
@@ -43,6 +40,16 @@ public class Category {
     @Column(name = "modified_time")
     private LocalDateTime modifiedAt;
 
+    private String lastModifiedBy;
+
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -51,12 +58,12 @@ public class Category {
         this.id = id;
     }
 
-    public UUID getVendorId() {
-        return vendorId;
+    public UUID getVendorID() {
+        return vendorID;
     }
 
-    public void setVendorId(UUID vendorId) {
-        this.vendorId = vendorId;
+    public void setVendorID(UUID vendorID) {
+        this.vendorID = vendorID;
     }
 
     public String getName() {
@@ -81,14 +88,6 @@ public class Category {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public UUID getParentCategoryId() {
-        return parentCategoryId;
-    }
-
-    public void setParentCategoryId(UUID parentCategoryId) {
-        this.parentCategoryId = parentCategoryId;
     }
 
     public List<ImageCategory> getIamges() {

@@ -1,8 +1,17 @@
 package com.mt.ecommerce.product.service;
 
 import com.mt.ecommerce.product.entity.UserInfo;
+import com.mt.ecommerce.product.entity.UserVendor;
+import com.mt.ecommerce.product.entity.Vendor;
+import com.mt.ecommerce.product.mapper.UserMapper;
+import com.mt.ecommerce.product.mapper.VendorMapper;
+import com.mt.ecommerce.product.model.Store;
 import com.mt.ecommerce.product.repository.UserInfoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mt.ecommerce.product.repository.UserVendorRepository;
+import com.mt.ecommerce.product.repository.VendorRepository;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,17 +19,28 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class UserInfoService implements UserDetailsService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserInfoService.class);
     private final UserInfoRepository repository;
     private final PasswordEncoder encoder;
 
-    @Autowired
-    public UserInfoService(UserInfoRepository repository, PasswordEncoder encoder) {
+    private final VendorRepository vendorRepository;
+
+    private final UserVendorRepository userVendorRepository;
+
+    public UserInfoService(UserInfoRepository repository, PasswordEncoder encoder, VendorRepository vendorRepository, UserVendorRepository userVendorRepository) {
         this.repository = repository;
         this.encoder = encoder;
+        this.vendorRepository = vendorRepository;
+        this.userVendorRepository = userVendorRepository;
     }
 
     // Method to load user details by username (email)
@@ -41,10 +61,44 @@ public class UserInfoService implements UserDetailsService {
 
     // Add any additional methods for registering or managing users
     public String addUser(UserInfo userInfo) {
-        // Encrypt password before saving
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return "User added successfully!";
+    }
+
+    @Transactional
+    public Store addVendorUser(Store store) {
+        Optional<UserInfo> existingUser = repository.findByEmail(store.getUserInfo().getEmail());
+        UserInfo userInfo = new UserMapper().mapDAO(store.getUserInfo());
+        if (existingUser.isEmpty()) {
+            logger.info("User Not exits will create new user {}", userInfo.getEmail());
+            userInfo.setRoles("ROLE_VENDOR, ROLE_USER");
+            userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+            userInfo = repository.save(userInfo);
+        } else {
+            userInfo = existingUser.get();
+            userInfo.setRoles("ROLE_VENDOR, ROLE_USER");
+            userInfo = repository.save(userInfo);
+            logger.info("Have updated Vendor roles to User {}", userInfo.getEmail());
+        }
+        Vendor vendor = new VendorMapper().mapDao(store.getVendors().stream().findFirst().orElseThrow(() -> new IllegalArgumentException("Missing vendor information")));
+        vendor = vendorRepository.save(vendor);
+        store.setUserInfo(new UserMapper().mapBO(userInfo));
+        UserVendor userVendor = new UserVendor();
+        userVendor.setVendor(vendor);
+        userVendor.setUserInfo(userInfo);
+        this.userVendorRepository.save(userVendor);
+        logger.info("Have Created Vendor Profile to User {} with vendor id {}", userInfo.getEmail(), vendor.getVendorId());
+        store.setVendors(Collections.singletonList(new VendorMapper().mapBo(vendor)));
+        return store;
+    }
+
+    public Store getVendorStoreByUserName(String user) {
+        UserInfo userInfo = this.repository.findByEmail(user).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Store store = new Store();
+        store.setUserInfo(new UserMapper().mapBO(userInfo));
+        store.setVendors(userInfo.getUserVendors().stream().map(userVendor -> new VendorMapper().mapBo(userVendor.getVendor())).collect(Collectors.toList()));
+        return store;
     }
 }
 

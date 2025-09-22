@@ -11,11 +11,18 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -45,34 +52,30 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                // Disable CSRF (not needed for stateless JWT)
-                .csrf(csrf -> csrf.disable())
-
-                // Configure endpoint authorization
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                                // Public endpoints
-                                .requestMatchers("/image/unsecured/**", "/auth/user", "/auth/token").permitAll()
-//
-//                        // Role-based endpoints
-//                        .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-//                        .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
-
-                                // All other endpoints require authentication
+                                .requestMatchers("/image/unsecured/**", "/category/unsecured/**", "/auth/user" , "/auth/user/vendor", "/auth/token", "/auth/token/vendor", "/app/**", "/h2-console/**", "/vendor/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-
-                // Stateless session (required for JWT)
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-
-                // Set custom authentication provider
                 .authenticationProvider(authenticationProvider())
-
-                // Add JWT filter before Spring Security's default filter
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Collections.singletonList("*")); // Allow all origins
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allow common methods
+        configuration.setAllowedHeaders(Collections.singletonList("*")); // Allow all headers
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     /*
      * Authentication provider configuration

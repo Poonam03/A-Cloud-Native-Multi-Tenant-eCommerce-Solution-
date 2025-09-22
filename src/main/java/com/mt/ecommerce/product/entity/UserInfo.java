@@ -5,6 +5,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,10 +18,20 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
+    @Column(name = "name", nullable = false)
+
     private String name;
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "roles", nullable = false)
     private String roles;
+
+    @OneToMany(mappedBy = "userInfo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<UserVendor> userVendors;
 
     private String phone;
 
@@ -35,6 +46,15 @@ public class UserInfo {
     private String country;
 
     private String zipCode;
+
+
+    public List<UserVendor> getUserVendors() {
+        return userVendors;
+    }
+
+    public void setUserVendors(List<UserVendor> userVendors) {
+        this.userVendors = userVendors;
+    }
 
     public UUID getId() {
         return id;
