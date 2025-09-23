@@ -30,7 +30,7 @@ public class OrderController {
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    @GetMapping(value = "/vendor", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<OrderBO> getUserOrder(
             @AuthenticationPrincipal UserDetails userDetails,
             @RequestParam(name = "pageNo", defaultValue = "0") int pageNo,
