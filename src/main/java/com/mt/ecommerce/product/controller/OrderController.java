@@ -45,5 +45,4 @@ public class OrderController {
             @RequestParam(name = "status") String status) {
         this.orderService.editOrderStatus(java.util.UUID.fromString(orderId), com.mt.ecommerce.product.model.OrderStatus.valueOf(status));
     }
-
 }
