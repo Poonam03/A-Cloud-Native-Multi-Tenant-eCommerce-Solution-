@@ -1,7 +1,6 @@
 package com.mt.ecommerce.product.service;
 
 import com.mt.ecommerce.product.entity.Image;
-import com.mt.ecommerce.product.entity.ImageCategory;
 import com.mt.ecommerce.product.entity.ImageProduct;
 import com.mt.ecommerce.product.entity.Product;
 import com.mt.ecommerce.product.exception.ProductNotFoundException;

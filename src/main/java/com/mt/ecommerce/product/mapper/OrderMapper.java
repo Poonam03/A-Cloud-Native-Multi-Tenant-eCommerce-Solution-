@@ -1,7 +1,6 @@
 package com.mt.ecommerce.product.mapper;
 
 import com.mt.ecommerce.product.entity.Order;
-import com.mt.ecommerce.product.entity.Product;
 import com.mt.ecommerce.product.model.OrderBO;
 import com.mt.ecommerce.product.model.ProductBO;
 

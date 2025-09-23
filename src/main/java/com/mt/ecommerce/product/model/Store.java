@@ -1,10 +1,6 @@
 package com.mt.ecommerce.product.model;
 
-import com.mt.ecommerce.product.entity.UserInfo;
-import com.mt.ecommerce.product.entity.Vendor;
-
 import java.util.List;
-import java.util.UUID;
 
 public class Store {
 
