@@ -21,14 +21,13 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping(value = "/unsecured/all", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/unsecured/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ProductBO> getAllProducts(
             @RequestParam(name = "vendorId") String vendorId,
-            @RequestParam(name = "categoryId") String categoryId,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size
     ) {
-        return this.productService.getProduct(UUID.fromString(vendorId), UUID.fromString(categoryId), page, size);
+        return this.productService.getProduct(UUID.fromString(vendorId),  page, size);
     }
 
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")

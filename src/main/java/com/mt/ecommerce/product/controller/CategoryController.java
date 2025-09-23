@@ -40,11 +40,11 @@ public class CategoryController {
     }
 
     @GetMapping(value = "/unsecured/all", produces = "application/json")
-    public List<CategoryBO> getCategories(@RequestParam(name = "username" , required = false, defaultValue = "") String username,
+    public List<CategoryBO> getCategories(
                                           @RequestParam(name = "vendorId") String vendorId,
                                           @RequestParam(name = "pageNo", defaultValue = "0") int pageNo,
                                           @RequestParam(name = "size", defaultValue = "10") int size) {
-        return this.categoryService.getCategory(UUID.fromString(vendorId), pageNo, size, username);
+        return this.categoryService.getCategory(UUID.fromString(vendorId), pageNo, size);
     }
 
 

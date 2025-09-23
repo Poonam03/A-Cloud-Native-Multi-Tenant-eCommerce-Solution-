@@ -1,17 +1,19 @@
 package com.mt.ecommerce.product.service;
 
+import com.mt.ecommerce.product.entity.Image;
+import com.mt.ecommerce.product.entity.ImageCategory;
 import com.mt.ecommerce.product.entity.ImageProduct;
 import com.mt.ecommerce.product.entity.Product;
 import com.mt.ecommerce.product.exception.ProductNotFoundException;
+import com.mt.ecommerce.product.model.ImageBO;
 import com.mt.ecommerce.product.model.ProductBO;
+import com.mt.ecommerce.product.repository.ImageProductRepository;
+import com.mt.ecommerce.product.repository.ImageRepository;
 import com.mt.ecommerce.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,10 +21,16 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ImageProductRepository imageProductRepository;
 
+    private final ImageRepository imageRepository;
+
+
+    public ProductService(ProductRepository productRepository, ImageProductRepository imageProductRepository, ImageRepository imageRepository) {
+        this.productRepository = productRepository;
+        this.imageProductRepository = imageProductRepository;
+        this.imageRepository = imageRepository;
+    }
 
     @Transactional
     public void updateProduct(ProductBO productBO, String userName) {
@@ -50,21 +58,6 @@ public class ProductService {
         Optional.ofNullable(productBO.getSku())
                 .ifPresent(product::setSku);
 
-        Optional.ofNullable(productBO.getImages())
-                .ifPresent(images -> {
-                    product.getImageProducts().clear();
-                    List<ImageProduct> imageProducts = new ArrayList<>();
-
-                    productBO.getImages().forEach(image -> {
-                        ImageProduct imageProduct = new ImageProduct();
-                        imageProduct.setIdentification(java.util.UUID.randomUUID());
-                        imageProduct.setImageId(image.getId());
-                        imageProduct.setProduct(product);
-                        imageProducts.add(imageProduct);
-                    });
-                    product.setImageProducts(imageProducts);
-                });
-
         this.productRepository.save(productOptional.get());
     }
 
@@ -72,7 +65,6 @@ public class ProductService {
     @Transactional
     public ProductBO saveProduct(ProductBO productBO, String userName) {
         Product product = new Product();
-        product.setId(UUID.randomUUID());
         product.setVendorID(productBO.getVendorId());
         product.setCategoryId(productBO.getCategoryId());
         product.setName(productBO.getName());
@@ -84,17 +76,17 @@ public class ProductService {
         product.setActive(true);
         product.setModifiedBy(userName);
         List<ImageProduct> imageProducts = new ArrayList<>();
-        if (productBO.getImages() != null) {
-            productBO.getImages().forEach(image -> {
-                ImageProduct imageProduct = new ImageProduct();
-                imageProduct.setIdentification(UUID.randomUUID());
-                imageProduct.setImageId(image.getId());
-                imageProduct.setProduct(product);
-                imageProducts.add(imageProduct);
+        if (productBO.getImageBOS() != null && !productBO.getImageBOS().isEmpty()) {
+            productBO.getImageBOS().forEach(imageBO -> {
+                ImageProduct imageCategory = new ImageProduct();
+                imageCategory.setImageId(imageBO.getId());
+                imageCategory.setProduct(product);
+                imageProducts.add(imageCategory);
             });
         }
         product.setImageProducts(imageProducts);
         Product product1 = this.productRepository.save(product);
+        this.imageProductRepository.saveAll(imageProducts);
         productBO.setId(product1.getId());
         return productBO;
     }
@@ -108,9 +100,9 @@ public class ProductService {
         this.productRepository.delete(productOptional.get());
     }
 
-    public List<ProductBO> getProduct(UUID vendorId, UUID categoryId, int pageNo, int size) {
+    public List<ProductBO> getProduct(UUID vendorId,  int pageNo, int size) {
         return this.productRepository
-                .findByVendorIdAndCategoryId(vendorId, categoryId, org.springframework.data.domain.PageRequest.of(pageNo, size))
+                .findByVendorID(vendorId,  org.springframework.data.domain.PageRequest.of(pageNo, size))
                 .stream()
                 .map(product -> {
                     ProductBO productBO = new ProductBO();
@@ -126,10 +118,18 @@ public class ProductService {
                     List<com.mt.ecommerce.product.model.ImageBO> imageBOS = product.getImageProducts()
                             .stream()
                             .map(imageProduct -> {
-                                com.mt.ecommerce.product.model.ImageBO imageBO = new com.mt.ecommerce.product.model.ImageBO();
-                                imageBO.setId(imageProduct.getImageId());
-                                return imageBO;
+                                Image image = this.imageRepository.findById(imageProduct.getImageId()).orElse(null);
+                                if(Objects.nonNull(image)){
+                                    ImageBO imageBO = new ImageBO();
+                                    imageBO.setImageUrl(image.getImageUrl());
+                                    imageBO.setId(image.getId());
+                                    imageBO.setAltText(image.getAltText());
+                                    imageBO.setUserId(image.getUserId());
+                                    return imageBO;
+                                }
+                                return null;
                             })
+                            .filter(Objects::nonNull)
                             .collect(Collectors.toList());
                     productBO.setImages(imageBOS);
                     return productBO;

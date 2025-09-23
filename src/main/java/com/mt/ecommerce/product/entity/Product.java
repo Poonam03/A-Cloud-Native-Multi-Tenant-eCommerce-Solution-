@@ -32,7 +32,7 @@ public class Product {
 
     private Double price;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.MERGE,  fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product", cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
     private List<ImageProduct> imageProducts;
 
     @Column(name = "quantity")

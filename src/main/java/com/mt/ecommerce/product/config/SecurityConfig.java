@@ -56,7 +56,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/image/unsecured/**", "/category/unsecured/**", "/auth/user" , "/auth/user/vendor", "/auth/token", "/auth/token/vendor", "/app/**", "/h2-console/**", "/vendor/**").permitAll()
+                                .requestMatchers("/image/unsecured/**", "/category/unsecured/**" , "/product/unsecured/**", "/auth/user" , "/auth/user/vendor", "/auth/token", "/auth/token/vendor", "/app/**", "/h2-console/**", "/vendor/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

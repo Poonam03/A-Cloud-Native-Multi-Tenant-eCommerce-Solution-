@@ -13,10 +13,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,14 +21,14 @@ public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    private final ImageRepository imageRepository;
-
     private final ImageCategoryRepository imageCategoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository, ImageRepository imageRepository, ImageCategoryRepository imageCategoryRepository) {
+    private final ImageRepository imageRepository;
+
+    public CategoryService(CategoryRepository categoryRepository, ImageCategoryRepository imageCategoryRepository, ImageRepository imageRepository) {
         this.categoryRepository = categoryRepository;
-        this.imageRepository = imageRepository;
         this.imageCategoryRepository = imageCategoryRepository;
+        this.imageRepository = imageRepository;
     }
 
     @Transactional
@@ -47,7 +44,6 @@ public class CategoryService {
         if (categoryBO.getImageBOS() != null && !categoryBO.getImageBOS().isEmpty()) {
             categoryBO.getImageBOS().forEach(imageBO -> {
                 ImageCategory imageCategory = new ImageCategory();
-                imageCategory.setId(UUID.randomUUID());
                 imageCategory.setImageId(imageBO.getId());
                 imageCategory.setCategory(category);
                 imageCategories.add(imageCategory);
@@ -55,11 +51,12 @@ public class CategoryService {
         }
         category.setIamges(imageCategories);
         Category category1 = this.categoryRepository.save(category);
+        this.imageCategoryRepository.saveAll(imageCategories);
         categoryBO.setId(category1.getId());
         return categoryBO;
     }
 
-    public List<CategoryBO> getCategory(UUID vendorId, int pageNo, int size, String username) {
+    public List<CategoryBO> getCategory(UUID vendorId, int pageNo, int size) {
         return this.categoryRepository
                 .findByVendorID(vendorId, PageRequest.of(pageNo, size))
                 .stream()
@@ -71,17 +68,24 @@ public class CategoryService {
                     categoryBO.setSlug(category.getSlug());
                     categoryBO.setDescription(category.getDescription());
                     categoryBO.setActive(category.isActive());
-                    List<Image> imageCategories = this.imageRepository.findByUserId(username);
-                    List<ImageBO> imageBOS = new ArrayList<>();
-                    if (imageCategories != null && !imageCategories.isEmpty()) {
-                        imageCategories.forEach(imageCategory -> {
-                            ImageBO imageBO = new ImageBO();
-                            imageBO.setId(imageCategory.getId());
-                            imageBO.setImageUrl(imageCategory.getImageUrl());
-                            imageBO.setAltText(imageCategory.getAltText());
-                            imageBOS.add(imageBO);
-                        });
-                    }
+
+                    List<ImageBO> imageBOS =
+                            category.getIamges()
+                                    .stream().map(imageCategory -> {
+                                        Image image = this.imageRepository.findById(imageCategory.getImageId()).orElse(null);
+                                        if (Objects.nonNull(image)) {
+                                            ImageBO imageBO = new ImageBO();
+                                            imageBO.setImageUrl(image.getImageUrl());
+                                            imageBO.setId(image.getId());
+                                            imageBO.setAltText(image.getAltText());
+                                            imageBO.setUserId(image.getUserId());
+                                            return imageBO;
+                                        } else {
+                                            return null;
+                                        }
+                                    })
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList());
                     categoryBO.setImageBOS(imageBOS);
                     return categoryBO;
                 })
