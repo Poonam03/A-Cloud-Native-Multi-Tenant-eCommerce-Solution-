@@ -46,7 +46,7 @@ public class OrderController {
         this.orderService.editOrderStatus(java.util.UUID.fromString(orderId), com.mt.ecommerce.product.model.OrderStatus.valueOf(status));
     }
 
-
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void addOrder(OrderBO orderBO){
         this.orderService.addOrder(orderBO);
