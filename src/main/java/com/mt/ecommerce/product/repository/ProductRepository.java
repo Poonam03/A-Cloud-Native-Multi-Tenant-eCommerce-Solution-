@@ -15,8 +15,9 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, UUID>, JpaRepository<Product, UUID> {
 
-    List<Product> findByVendorID(UUID vendorID,  PageRequest pageRequest);
+    List<Product> findAllByVendorID(UUID vendorID, PageRequest pageRequest);
 
+    List<Product> findAllByCategoryIdAndVendorID(UUID categoryId, UUID vendorID, PageRequest pageRequest);
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Product> findById(UUID id);
 

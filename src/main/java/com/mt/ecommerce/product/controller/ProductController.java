@@ -30,6 +30,16 @@ public class ProductController {
         return this.productService.getProduct(UUID.fromString(vendorId),  page, size);
     }
 
+    @GetMapping(value = "/unsecured/category/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<ProductBO> getAllProductsWithCategory(
+            @RequestParam(name = "vendorId") String vendorId,
+            @RequestParam(name = "categoryId") String categoryId,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        return this.productService.getProduct(UUID.fromString(vendorId),  UUID.fromString(categoryId), page, size);
+    }
+
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @PostMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ProductBO createProduct(

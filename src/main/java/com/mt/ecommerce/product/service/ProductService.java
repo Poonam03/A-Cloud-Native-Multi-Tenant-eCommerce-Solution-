@@ -101,8 +101,47 @@ public class ProductService {
 
     public List<ProductBO> getProduct(UUID vendorId,  int pageNo, int size) {
         return this.productRepository
-                .findByVendorID(vendorId,  org.springframework.data.domain.PageRequest.of(pageNo, size))
+                .findAllByVendorID(vendorId,  org.springframework.data.domain.PageRequest.of(pageNo, size))
                 .stream()
+                .map(product -> {
+                    ProductBO productBO = new ProductBO();
+                    productBO.setId(product.getId());
+                    productBO.setVendorId(product.getVendorID());
+                    productBO.setCategoryId(product.getCategoryId());
+                    productBO.setName(product.getName());
+                    productBO.setSlug(product.getSlug());
+                    productBO.setDescription(product.getDescription());
+                    productBO.setSku(product.getSku());
+                    productBO.setPrice(product.getPrice());
+                    productBO.setQuantity(product.getStockQuantity());
+                    List<com.mt.ecommerce.product.model.ImageBO> imageBOS = product.getImageProducts()
+                            .stream()
+                            .map(imageProduct -> {
+                                Image image = this.imageRepository.findById(imageProduct.getImageId()).orElse(null);
+                                if(Objects.nonNull(image)){
+                                    ImageBO imageBO = new ImageBO();
+                                    imageBO.setImageUrl(image.getImageUrl());
+                                    imageBO.setId(image.getId());
+                                    imageBO.setAltText(image.getAltText());
+                                    imageBO.setUserId(image.getUserId());
+                                    return imageBO;
+                                }
+                                return null;
+                            })
+                            .filter(Objects::nonNull)
+                            .collect(Collectors.toList());
+                    productBO.setImages(imageBOS);
+                    return productBO;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+    public List<ProductBO> getProduct(UUID vendorId, UUID categoryId,  int pageNo, int size) {
+        return this.productRepository
+                .findAll()
+                .stream()
+                .filter(product -> product.getCategoryId().equals(categoryId) && product.getVendorID().equals(vendorId))
                 .map(product -> {
                     ProductBO productBO = new ProductBO();
                     productBO.setId(product.getId());

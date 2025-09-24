@@ -58,8 +58,8 @@ public class OrderService {
                 this.productRepository.save(product);
                 price.set(price.get() + (product.getPrice().intValue() * productBO.getQuantity()));
                 OrderProductEntity orderProductEntity = new OrderProductEntity();
-                orderProductEntity.setProductId(product);
-                orderProductEntity.setOrderId(order);
+                orderProductEntity.setProductId(product.getId());
+                orderProductEntity.setOrderId(order.getId());
                 orderProductEntity.setQuantity(productBO.getQuantity());
                 orderProductRepository.save(orderProductEntity);
             } else {
@@ -83,11 +83,11 @@ public class OrderService {
     }
 
     public List<OrderBO> getAllOrder(UUID vendorId, int pageNo, int size) {
-        return this.orderRepository.findByVendorId(vendorId, PageRequest.of(pageNo, size)).stream().map(order -> new OrderMapper().mapBO(order, this.orderProductRepository.findAllByOrderId(order))).collect(Collectors.toList());
+        return this.orderRepository.findByVendorId(vendorId, PageRequest.of(pageNo, size)).stream().map(order -> new OrderMapper().mapBO(order, this.orderProductRepository.findAllByOrderId(order.getId()), this.productRepository)).collect(Collectors.toList());
     }
 
     public List<OrderBO> getAllOrderByUserId(String userId, int pageNo, int size) {
-        return this.orderRepository.findByUserId(userId, PageRequest.of(pageNo, size)).stream().map(order -> new OrderMapper().mapBO(order, this.orderProductRepository.findAllByOrderId(order))).collect(Collectors.toList());
+        return this.orderRepository.findByUserId(userId, PageRequest.of(pageNo, size)).stream().map(order -> new OrderMapper().mapBO(order, this.orderProductRepository.findAllByOrderId(order.getId()), this.productRepository)).collect(Collectors.toList());
     }
 
 

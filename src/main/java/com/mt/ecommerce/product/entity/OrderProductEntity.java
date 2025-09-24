@@ -18,13 +18,11 @@ public class OrderProductEntity {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
-    @JoinColumn(name = "order_id", referencedColumnName = "id")
-    @OneToOne(fetch = FetchType.LAZY)
-    private Order orderId;
+    @Column(name = "order_id")
+    private UUID orderId;
 
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
-    @OneToOne(fetch = FetchType.LAZY)
-    private Product productId;
+    @Column(name = "product_id")
+    private UUID productId;
 
     private int quantity;
 
@@ -45,19 +43,20 @@ public class OrderProductEntity {
         this.createdAt = createdAt;
     }
 
-    public Order getOrderId() {
+
+    public UUID getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Order orderId) {
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 
-    public Product getProductId() {
+    public UUID getProductId() {
         return productId;
     }
 
-    public void setProductId(Product productId) {
+    public void setProductId(UUID productId) {
         this.productId = productId;
     }
 
