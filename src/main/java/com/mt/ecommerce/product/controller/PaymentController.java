@@ -6,6 +6,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
@@ -19,14 +21,8 @@ public class PaymentController {
 
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public PaymentBO getVendorOrder(
-            @RequestParam(name = "orderID") String orderID) {
-        return this.paymentService.getPayment(java.util.UUID.fromString(orderID));
-    }
-
-    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addOrder(PaymentBO paymentBO) {
-        this.paymentService.createPayment(paymentBO);
+    public List<PaymentBO> getVendorOrder(
+            @RequestParam(name = "vendorId") String vendorID) {
+        return this.paymentService.getPayment(java.util.UUID.fromString(vendorID));
     }
 }

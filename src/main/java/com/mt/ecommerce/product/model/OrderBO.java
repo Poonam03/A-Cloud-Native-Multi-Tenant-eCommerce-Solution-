@@ -40,6 +40,16 @@ public class OrderBO {
 
     private String zipCode;
 
+    private Double price;
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
     public UUID getId() {
         return id;
     }

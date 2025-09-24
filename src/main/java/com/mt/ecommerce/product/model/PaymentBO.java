@@ -4,9 +4,38 @@ import java.util.UUID;
 
 public class PaymentBO {
 
+    private UUID id;
     private UUID orderId;
 
     private Double amount;
+
+    private UUID vendorId;
+
+    private String userName;
+
+    public UUID getVendorId() {
+        return vendorId;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setVendorId(UUID vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
     public PaymentBO() {
     }

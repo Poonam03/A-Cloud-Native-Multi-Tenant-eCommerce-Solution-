@@ -20,8 +20,6 @@ public class Order {
 
     private UUID vendorId;
 
-    private List<UUID> productId;
-
     @Column(name = "created_time")
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -45,6 +43,16 @@ public class Order {
 
     private String zipCode;
 
+    private double price;
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
     public UUID getId() {
         return id;
     }
@@ -67,14 +75,6 @@ public class Order {
 
     public void setVendorId(UUID vendorId) {
         this.vendorId = vendorId;
-    }
-
-    public List<UUID> getProductId() {
-        return productId;
-    }
-
-    public void setProductId(List<UUID> productId) {
-        this.productId = productId;
     }
 
     public LocalDateTime getCreatedAt() {

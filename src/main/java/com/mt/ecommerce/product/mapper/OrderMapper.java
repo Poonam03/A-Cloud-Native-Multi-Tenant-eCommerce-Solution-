@@ -1,6 +1,8 @@
 package com.mt.ecommerce.product.mapper;
 
 import com.mt.ecommerce.product.entity.Order;
+import com.mt.ecommerce.product.entity.OrderProductEntity;
+import com.mt.ecommerce.product.entity.Product;
 import com.mt.ecommerce.product.model.OrderBO;
 import com.mt.ecommerce.product.model.ProductBO;
 
@@ -13,7 +15,6 @@ public class OrderMapper {
         Order order = new Order();
         order.setId(orderBO.getId());
         order.setUserId(orderBO.getUserInfoBO().getEmail());
-        order.setProductId(orderBO.getProductBO().stream().map(ProductBO::getId).collect(Collectors.toList()));
         order.setCity(orderBO.getCity());
         order.setOrderStatus(orderBO.getOrderStatus());
         order.setAddressLine1(orderBO.getAddressLine1());
@@ -25,7 +26,7 @@ public class OrderMapper {
         return order;
     }
 
-    public OrderBO mapBO(Order order, List<ProductBO> productBO){
+    public OrderBO mapBO(Order order, List<OrderProductEntity> orderProductEntities){
         OrderBO orderBO = new OrderBO();
         orderBO.setId(order.getId());
         orderBO.setCity(order.getCity());
@@ -36,7 +37,18 @@ public class OrderMapper {
         orderBO.setPhone(order.getPhone());
         orderBO.setState(order.getState());
         orderBO.setVendorId(order.getVendorId());
+        List<ProductBO> productBO = orderProductEntities.stream().map(orderProductEntity -> {
+            Product product = orderProductEntity.getProductId();
+            ProductBO productBO1 = new ProductBO();
+            productBO1.setName(product.getName());
+            productBO1.setDescription(product.getDescription());
+            productBO1.setPrice(product.getPrice());
+            productBO1.setQuantity(orderProductEntity.getQuantity());
+            return productBO1;
+        }).collect(Collectors.toList());
         orderBO.setProductBO(productBO);
+        orderBO.setPrice(order.getPrice());
+        orderBO.setOrderDate(order.getCreatedAt());
         return orderBO;
     }
 

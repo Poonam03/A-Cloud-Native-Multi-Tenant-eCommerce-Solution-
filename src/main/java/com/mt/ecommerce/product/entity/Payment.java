@@ -27,6 +27,26 @@ public class Payment {
 
     private double amount;
 
+    private UUID creditorId;
+
+    private String debitorId;
+
+    public UUID getCreditorId() {
+        return creditorId;
+    }
+
+    public void setCreditorId(UUID creditorId) {
+        this.creditorId = creditorId;
+    }
+
+    public String getDebitorId() {
+        return debitorId;
+    }
+
+    public void setDebitorId(String debitorId) {
+        this.debitorId = debitorId;
+    }
+
     public UUID getId() {
         return id;
     }

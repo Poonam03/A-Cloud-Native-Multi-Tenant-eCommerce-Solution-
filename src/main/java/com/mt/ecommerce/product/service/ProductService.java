@@ -40,7 +40,7 @@ public class ProductService {
         Product product = productOptional.get();
         product.setModifiedBy(userName);
         Optional.ofNullable(productBO.getQuantity())
-                .ifPresent(quant -> product.setStockQuantity(Integer.parseInt(quant)));
+                .ifPresent(product::setStockQuantity);
 
         Optional.ofNullable(productBO.getPrice())
                 .ifPresent(product::setPrice);
@@ -71,7 +71,7 @@ public class ProductService {
         product.setDescription(productBO.getDescription());
         product.setSku(productBO.getSku());
         product.setPrice(productBO.getPrice());
-        product.setStockQuantity(Integer.parseInt(productBO.getQuantity()));
+        product.setStockQuantity(productBO.getQuantity());
         product.setActive(true);
         product.setModifiedBy(userName);
         List<ImageProduct> imageProducts = new ArrayList<>();
@@ -113,7 +113,7 @@ public class ProductService {
                     productBO.setDescription(product.getDescription());
                     productBO.setSku(product.getSku());
                     productBO.setPrice(product.getPrice());
-                    productBO.setQuantity(String.valueOf(product.getStockQuantity()));
+                    productBO.setQuantity(product.getStockQuantity());
                     List<com.mt.ecommerce.product.model.ImageBO> imageBOS = product.getImageProducts()
                             .stream()
                             .map(imageProduct -> {

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/order")
@@ -46,9 +47,9 @@ public class OrderController {
         this.orderService.editOrderStatus(java.util.UUID.fromString(orderId), com.mt.ecommerce.product.model.OrderStatus.valueOf(status));
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
+    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_VENDOR')")
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void addOrder(OrderBO orderBO){
-        this.orderService.addOrder(orderBO);
+    public void addOrder(@RequestParam(name = "vendor") UUID vendorID, @RequestBody  OrderBO orderBO, @AuthenticationPrincipal UserDetails userDetails){
+        this.orderService.addOrder(orderBO, vendorID, userDetails.getUsername());
     }
 }

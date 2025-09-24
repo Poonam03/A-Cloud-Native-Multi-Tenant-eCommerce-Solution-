@@ -20,7 +20,7 @@ public class ProductBO {
 
     private Double price;
 
-    private String quantity;
+    private Integer quantity;
 
     private List<ImageBO> imageBOS;
 
@@ -100,11 +100,11 @@ public class ProductBO {
         this.price = price;
     }
 
-    public String getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(String quantity) {
+    public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
 
