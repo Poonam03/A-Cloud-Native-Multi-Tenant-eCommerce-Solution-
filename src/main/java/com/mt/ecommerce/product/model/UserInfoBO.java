@@ -14,6 +14,11 @@ public class UserInfoBO {
     private String name;
     private String email;
 
+
+
+
+
+
     private String password;
 
     private String roles;

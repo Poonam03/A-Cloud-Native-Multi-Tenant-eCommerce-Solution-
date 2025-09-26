@@ -59,9 +59,11 @@ public class SecurityConfig {
                                 .requestMatchers("/vendor/unsecured/**", "/image/unsecured/**", "/category/unsecured/**" , "/product/unsecured/**", "/auth/user" , "/auth/user/vendor", "/auth/token", "/auth/token/vendor", "/app/**", "/h2-console/**", "/vendor/**").permitAll()
                                 .anyRequest().authenticated()
                 )
+
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())); // Allow framing from same origin
         return http.build();
     }
 
