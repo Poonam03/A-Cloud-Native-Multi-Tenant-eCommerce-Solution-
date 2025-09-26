@@ -3,6 +3,7 @@ package com.mt.ecommerce.product.service;
 import com.mt.ecommerce.product.entity.UserInfo;
 import com.mt.ecommerce.product.entity.UserVendor;
 import com.mt.ecommerce.product.entity.Vendor;
+import com.mt.ecommerce.product.exception.MTException;
 import com.mt.ecommerce.product.mapper.UserMapper;
 import com.mt.ecommerce.product.mapper.VendorMapper;
 import com.mt.ecommerce.product.model.Store;
@@ -57,11 +58,14 @@ public class UserInfoService implements UserDetailsService {
         return new User(userInfoDetails.getUsername(), userInfoDetails.getPassword(), userInfoDetails.getAuthorities());
     }
 
-    // Add any additional methods for registering or managing users
-    public String addUser(UserInfo userInfo) {
+    public UserInfo addUser(UserInfo userInfo) {
+        Optional<UserInfo> existingUser = repository.findByEmail(userInfo.getEmail());
+        if(existingUser.isPresent()){
+            throw new MTException("User Already exits");
+        }
+        userInfo.setRoles("ROLE_USER");
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-        repository.save(userInfo);
-        return "User added successfully!";
+        return repository.save(userInfo);
     }
 
     @Transactional
@@ -97,6 +101,10 @@ public class UserInfoService implements UserDetailsService {
         store.setUserInfo(new UserMapper().mapBO(userInfo));
         store.setVendors(userInfo.getUserVendors().stream().map(userVendor -> new VendorMapper().mapBo(userVendor.getVendor())).collect(Collectors.toList()));
         return store;
+    }
+
+    public UserInfo getUser(String userName){
+        return this.repository.findByEmail(userName).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }
 

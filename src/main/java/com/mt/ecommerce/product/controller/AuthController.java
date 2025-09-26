@@ -5,6 +5,7 @@ import com.mt.ecommerce.product.config.JwtService;
 import com.mt.ecommerce.product.entity.UserInfo;
 import com.mt.ecommerce.product.model.AuthRequest;
 import com.mt.ecommerce.product.model.Store;
+import com.mt.ecommerce.product.model.UserInfoBO;
 import com.mt.ecommerce.product.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class AuthController {
     }
 
     @PostMapping( value = "/user", consumes = "application/json")
-    public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
+    public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
         try {
             logger.info("Attempting to add new user with email: {}", userInfo.getEmail());
             return ResponseEntity.ok(service.addUser(userInfo));
@@ -67,14 +68,28 @@ public class AuthController {
 
 
     @PostMapping("/token")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         logger.info("Authenticating user: {} is fetching token for sigin", authRequest.getUsername());
         try{
+            UserInfo userInfo  = this.service.getUser(authRequest.getUsername());
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
             );
             if (authentication.isAuthenticated()) {
-                return ResponseEntity.ok(jwtService.generateToken(authRequest.getUsername()));
+                UserInfoBO userInfoBO = new UserInfoBO();
+                userInfoBO.setId(userInfo.getId());
+                userInfoBO.setName(userInfo.getName());
+                userInfoBO.setEmail(userInfo.getEmail());
+                userInfoBO.setAddressLine1(userInfo.getAddressLine1());
+                userInfoBO.setAddressLine2(userInfo.getAddressLine2());
+                userInfoBO.setCity(userInfo.getCity());
+                userInfoBO.setState(userInfo.getState());
+                userInfoBO.setCountry(userInfo.getCountry());
+                userInfoBO.setZipCode(userInfo.getZipCode());
+                userInfoBO.setPhone(userInfo.getPhone());
+                userInfoBO.setRoles(userInfo.getRoles());
+                userInfoBO.setToken(jwtService.generateToken(authRequest.getUsername()));
+                return ResponseEntity.ok(userInfoBO);
             } else {
                 logger.error("Authentication failed for user: {}", authRequest.getUsername());
                 return ResponseEntity.internalServerError().body("Invalid Username or Password");

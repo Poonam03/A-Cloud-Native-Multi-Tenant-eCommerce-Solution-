@@ -34,6 +34,16 @@ public class UserInfoBO {
 
     private String zipCode;
 
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public UUID getId() {
         return id;
     }
