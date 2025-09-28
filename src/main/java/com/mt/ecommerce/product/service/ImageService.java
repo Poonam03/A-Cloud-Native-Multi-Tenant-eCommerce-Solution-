@@ -15,7 +15,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+/**
+ * Service class for managing images.
+ * Provides methods for creating, updating, deleting, and retrieving images.
+ */
 @Service
 public class ImageService {
 
@@ -26,6 +29,12 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
+    /**
+     * Finds an image by its ID.
+     *
+     * @param imageID the ID of the image to find
+     * @return the ImageBO representing the found image, or an empty ImageBO if not found
+     */
     public ImageBO findImage(UUID imageID) {
         Optional<Image> imageOptional = this.imageRepository.findById(imageID);
         ImageBO imageBO = new ImageBO();
@@ -37,6 +46,12 @@ public class ImageService {
         return imageBO;
     }
 
+    /**
+     * Finds all images for a specific user.
+     *
+     * @param userId the ID of the user whose images are to be retrieved
+     * @return a list of ImageBO objects representing the user's images
+     */
     public List<ImageBO> findAll(String userId) {
         return this.imageRepository.findByUserId(userId)
                 .stream().map(image -> {
@@ -49,6 +64,13 @@ public class ImageService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * Creates a new image.
+     *
+     * @param imageUrl the URL of the image
+     * @param altText  the alternative text for the image
+     * @param userId   the ID of the user uploading the image
+     */
     public void createImage(String imageUrl, String altText, String userId) {
         if(this.imageRepository.findByUserId(userId).size() >= 15) {
             throw new ImageUploadException("You can upload maximum 15 images");
@@ -60,6 +82,13 @@ public class ImageService {
         this.imageRepository.save(image);
     }
 
+    /**
+     * Updates an existing image.
+     *
+     * @param imageID  the ID of the image to update
+     * @param altText  the new alternative text for the image
+     * @param imageUrl the new URL of the image
+     */
     @Transactional
     public void updateImage(UUID imageID, String altText, String imageUrl) {
         Optional<Image> imageOptional = this.imageRepository.findById(imageID);
@@ -76,6 +105,13 @@ public class ImageService {
 
     }
 
+    /**
+     * Deletes an image by its ID and removes the associated file from the filesystem.
+     *
+     * @param imageID  the ID of the image to delete
+     * @param imageUrl the path to the image file to delete
+     * @throws IOException if an I/O error occurs while deleting the file
+     */
     @Transactional
     public void deleteImage(UUID imageID, Path imageUrl) throws IOException {
         this.imageRepository.deleteById(imageID);

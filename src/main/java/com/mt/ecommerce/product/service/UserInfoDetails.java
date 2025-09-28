@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * UserDetails implementation for Spring Security.
+ * Represents the authenticated user's information and authorities.
+ */
 public class UserInfoDetails implements UserDetails {
 
     private String username; // Changed from 'name' to 'email' for clarity
@@ -29,12 +33,13 @@ public class UserInfoDetails implements UserDetails {
     }
 
 
-
+    //{@Override}
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
+    //{@Override}
     @Override
     public String getPassword() {
         return password;

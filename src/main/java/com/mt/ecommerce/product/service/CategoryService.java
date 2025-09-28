@@ -16,6 +16,10 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing product categories.
+ * Provides methods for adding, updating, deleting, and retrieving categories.
+ */
 @Service
 public class CategoryService {
 
@@ -31,6 +35,13 @@ public class CategoryService {
         this.imageRepository = imageRepository;
     }
 
+    /**
+     * Adds a new category.
+     *
+     * @param categoryBO the category information to add
+     * @param userName   the username of the user adding the category
+     * @return the added CategoryBO
+     */
     @Transactional
     public CategoryBO addCategory(CategoryBO categoryBO, String userName) {
         Category category = new Category();
@@ -56,6 +67,14 @@ public class CategoryService {
         return categoryBO;
     }
 
+    /**
+     * Retrieves categories for a specific vendor with pagination.
+     *
+     * @param vendorId the ID of the vendor whose categories are to be retrieved
+     * @param pageNo   the page number for pagination
+     * @param size     the number of records per page
+     * @return a list of CategoryBO objects representing the vendor's categories
+     */
     public List<CategoryBO> getCategory(UUID vendorId, int pageNo, int size) {
         return this.categoryRepository
                 .findByVendorID(vendorId, PageRequest.of(pageNo, size))
@@ -92,6 +111,12 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Updates an existing category.
+     *
+     * @param categoryBO the category information to update
+     * @param userName   the username of the user updating the category
+     */
     public void updateCategory(CategoryBO categoryBO, String userName) {
         Optional<Category> categoryOptional = this.categoryRepository.findByIdAndVendorID(categoryBO.getId(), categoryBO.getVendorID());
         if (categoryOptional.isPresent()) {
@@ -107,6 +132,12 @@ public class CategoryService {
         }
     }
 
+    /**
+     * Deletes a category.
+     *
+     * @param categoryId the ID of the category to delete
+     * @param vendorId   the ID of the vendor
+     */
     public void deleteCategory(UUID categoryId, UUID vendorId) {
         Optional<Category> categoryOptional = this.categoryRepository.findByIdAndVendorID(categoryId, vendorId);
         if (categoryOptional.isPresent()) {

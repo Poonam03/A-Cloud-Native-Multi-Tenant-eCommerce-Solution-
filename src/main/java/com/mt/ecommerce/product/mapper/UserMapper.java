@@ -3,10 +3,16 @@ package com.mt.ecommerce.product.mapper;
 import com.mt.ecommerce.product.entity.UserInfo;
 import com.mt.ecommerce.product.model.UserInfoBO;
 
+/** * Mapper class for converting between UserInfo entity and UserInfoBO model.
+ */
 public class UserMapper {
 
 
-
+    /**     * Maps a UserInfoBO object to a UserInfo entity.
+      *
+      * @param userInfoBO the UserInfoBO object to be mapped
+      * @return the mapped UserInfo entity
+      */
     public UserInfo mapDAO(UserInfoBO userInfoBO){
         UserInfo userInfo = new UserInfo();
         userInfo.setId(userInfoBO.getId());
@@ -23,6 +29,11 @@ public class UserMapper {
         return userInfo;
     }
 
+    /**     * Maps a UserInfo entity to a UserInfoBO object.
+      *
+      * @param userInfo the UserInfo entity to be mapped
+      * @return the mapped UserInfoBO object
+      */
     public UserInfoBO mapBO(UserInfo userInfo){
         UserInfoBO userInfoBO = new UserInfoBO();
         userInfoBO.setId(userInfo.getId());

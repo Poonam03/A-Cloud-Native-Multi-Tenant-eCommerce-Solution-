@@ -9,14 +9,30 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+/**
+ * Global exception handler for product-related exceptions.
+ * Catches specific exceptions and returns appropriate HTTP responses.
+ */
 @RestControllerAdvice
 public class ProductExceptionHandler {
 
+    /**
+     * Handles not found exceptions and returns a 404 response.
+     *
+     * @param ex the exception to handle
+     * @return a ResponseEntity with error details and 404 status
+     */
     @ExceptionHandler({ProductNotFoundException.class, CategoryNotFoundException.class, IllegalArgumentException.class, NoOrderFound.class, ProductNotFoundException.class})
     public ResponseEntity<Error> handleNotFoundException(RuntimeException ex) {
         return new ResponseEntity<>(new Error(404, ex.getMessage()), HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles all other exceptions and returns a 500 response.
+     *
+     * @param ex the exception to handle
+     * @return a ResponseEntity with error details and 500 status
+     */
     @org.springframework.web.bind.annotation.ExceptionHandler(Exception.class)
     public ResponseEntity<Error> error(Exception ex) {
         return new ResponseEntity<>(new Error(500, ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);

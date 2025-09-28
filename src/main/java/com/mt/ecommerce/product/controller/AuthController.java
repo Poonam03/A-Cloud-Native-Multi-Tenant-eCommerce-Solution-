@@ -19,6 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+/**
+ * Controller for handling authentication and user management.
+ * Provides endpoints for user registration, vendor registration, and token generation.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -38,6 +42,13 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
+    /**
+     * Endpoint to register a new user.
+     * Accepts a UserInfo object in the request body and returns the created user or an error message.
+     *
+     * @param userInfo the user information to register
+     * @return ResponseEntity with the created user or an error message
+     */
     @PostMapping( value = "/user", consumes = "application/json")
     public ResponseEntity<?> addNewUser(@RequestBody UserInfo userInfo) {
         try {
@@ -52,6 +63,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * Endpoint to register a new vendor user along with their store information.
+     * Accepts a Store object in the request body and returns the created store or an error message.
+     *
+     * @param store the store information along with user details to register
+     * @return ResponseEntity with the created store or an error message
+     */
     @PostMapping(value = "/user/vendor", consumes = "application/json", produces = {"application/json", MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<?> addVendor(@RequestBody Store store){
         try {
@@ -67,6 +85,12 @@ public class AuthController {
     }
 
 
+    /** * Endpoint to authenticate a user and generate a JWT token.
+     * Accepts an AuthRequest object in the request body and returns a UserInfoBO with the token or an error message.
+     *
+     * @param authRequest the authentication request containing username and password
+     * @return ResponseEntity with UserInfoBO containing the token or an error message
+     */
     @PostMapping("/token")
     public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         logger.info("Authenticating user: {} is fetching token for sigin", authRequest.getUsername());
@@ -100,6 +124,12 @@ public class AuthController {
         }
     }
 
+    /** * Endpoint to authenticate a vendor user and generate a JWT token.
+     * Accepts an AuthRequest object in the request body and returns a Store with the token or an error message.
+     *
+     * @param authRequest the authentication request containing username and password
+     * @return ResponseEntity with Store containing the token or an error message
+     */
     @PostMapping(value = "/token/vendor", produces = {"application/json", MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<?> authenticateAndGetTokenForVendor(@RequestBody AuthRequest authRequest) {
         logger.info("Authenticating user: {} is fetching token for sigin", authRequest.getUsername());

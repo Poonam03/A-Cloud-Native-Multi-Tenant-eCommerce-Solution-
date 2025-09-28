@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for managing vendors.
+ * Provides endpoints for retrieving vendor information.
+ */
 @RestController
 @RequestMapping("/vendor")
 public class VendorController {
@@ -21,11 +25,23 @@ public class VendorController {
     }
 
 
+    /**     * Endpoint to retrieve all vendors.
+     * Accessible without authentication.
+     *
+     * @return a list of VendorBO objects representing all vendors
+     */
     @GetMapping(value = "/unsecured/all", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<VendorBO> getVendors() {
         return this.vendorService.vendorBOS();
     }
 
+    /**
+     * Endpoint to retrieve a vendor by store name.
+     * Accessible without authentication.
+     *
+     * @param storename the store name of the vendor to retrieve
+     * @return the VendorBO object representing the vendor with the specified store name
+     */
     @GetMapping(value = "/unsecured/{storename}", produces = MediaType.APPLICATION_JSON_VALUE)
     public VendorBO getVendorByStoreName(@PathVariable("storename") String storename) {
         return this.vendorService.findByName(storename);

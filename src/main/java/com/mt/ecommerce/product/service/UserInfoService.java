@@ -24,6 +24,10 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing user information and authentication.
+ * Implements UserDetailsService for Spring Security integration.
+ */
 @Service
 public class UserInfoService implements UserDetailsService {
 
@@ -58,6 +62,12 @@ public class UserInfoService implements UserDetailsService {
         return new User(userInfoDetails.getUsername(), userInfoDetails.getPassword(), userInfoDetails.getAuthorities());
     }
 
+    /**
+     * Adds a new user to the system.
+     *
+     * @param userInfo the user information to add
+     * @return the added UserInfo
+     */
     public UserInfo addUser(UserInfo userInfo) {
         Optional<UserInfo> existingUser = repository.findByEmail(userInfo.getEmail());
         if(existingUser.isPresent()){
@@ -68,6 +78,12 @@ public class UserInfoService implements UserDetailsService {
         return repository.save(userInfo);
     }
 
+    /**
+     * Adds a vendor user to the system.
+     *
+     * @param store the store information containing user and vendor details
+     * @return the added Store with user and vendor information
+     */
     @Transactional
     public Store addVendorUser(Store store) {
         Optional<UserInfo> existingUser = repository.findByEmail(store.getUserInfo().getEmail());
@@ -95,6 +111,12 @@ public class UserInfoService implements UserDetailsService {
         return store;
     }
 
+    /**
+     * Retrieves the store information associated with a vendor user by their username.
+     *
+     * @param user the username of the vendor user
+     * @return the Store information containing user and vendor details
+     */
     public Store getVendorStoreByUserName(String user) {
         UserInfo userInfo = this.repository.findByEmail(user).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Store store = new Store();
@@ -103,6 +125,12 @@ public class UserInfoService implements UserDetailsService {
         return store;
     }
 
+    /**
+     * Retrieves user information by their username (email).
+     *
+     * @param userName the username (email) of the user
+     * @return the UserInfo associated with the given username
+     */
     public UserInfo getUser(String userName){
         return this.repository.findByEmail(userName).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }

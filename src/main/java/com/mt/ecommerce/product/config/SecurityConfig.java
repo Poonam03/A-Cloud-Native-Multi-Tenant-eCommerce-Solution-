@@ -24,6 +24,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.Collections;
 
+/**
+ * Security configuration class for setting up authentication and authorization.
+ * Configures JWT authentication, CORS, CSRF, and session management.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -45,9 +49,9 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
-    /*
-     * Main security configuration
-     * Defines endpoint access rules and JWT filter setup
+    /**
+     * Security filter chain configuration
+     * Defines security policies, CORS, CSRF, session management, and request authorization
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -67,7 +71,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-
+    /**
+     * CORS configuration source
+     * Allows cross-origin requests from any origin with common methods and headers
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

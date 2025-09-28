@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller for managing payments.
+ * Provides endpoints for retrieving payment information.
+ */
 @RestController
 @RequestMapping("/payment")
 public class PaymentController {
@@ -19,6 +23,13 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
+    /**
+     * Endpoint to retrieve payments for a specific vendor.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     *
+     * @param vendorID the ID of the vendor whose payments are to be retrieved
+     * @return a list of PaymentBO objects representing the vendor's payments
+     */
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<PaymentBO> getVendorOrder(

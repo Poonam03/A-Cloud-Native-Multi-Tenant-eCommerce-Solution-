@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/** * Service class for managing vendors.
+ * Provides methods for retrieving vendor information.
+ */
 @Service
 public class VendorService {
 
@@ -17,6 +20,10 @@ public class VendorService {
         this.vendorRepository = vendorRepository;
     }
 
+    /**     * Retrieves all vendors.
+     *
+     * @return a list of VendorBO objects representing all vendors
+     */
     public List<VendorBO> vendorBOS(){
         return this.vendorRepository.findAll().stream()
                 .map(vendor -> {
@@ -27,6 +34,12 @@ public class VendorService {
                 }).collect(Collectors.toList());
     }
 
+    /**     * Finds a vendor by store name.
+     *
+     * @param vendorName the store name of the vendor to find
+     * @return the VendorBO object representing the found vendor
+     * @throws IllegalArgumentException if no vendor is found with the specified store name
+     */
     public VendorBO findByName(String vendorName){
         Vendor vendor = this.vendorRepository.findByStoreName(vendorName);
         if(vendor == null){

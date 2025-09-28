@@ -20,6 +20,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
+/**
+ * Controller for managing image uploads and retrievals.
+ * Provides endpoints for uploading, updating, deleting, and fetching images.
+ */
 @RestController
 @RequestMapping("/image")
 public class ImageController {
@@ -40,6 +44,14 @@ public class ImageController {
     }
 
 
+    /**
+     * Endpoint to upload a new image.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     *
+     * @param userDetails the authenticated user's details
+     * @param file        the image file to upload
+     * @param altText     the alternative text for the image
+     */
     @PostMapping("")
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     public void uploadImage(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("file") MultipartFile file, @RequestParam("altText") String altText) {
@@ -57,6 +69,14 @@ public class ImageController {
         }
     }
 
+    /**
+     * Endpoint to update an existing image.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     *
+     * @param file      the new image file
+     * @param altText   the new alternative text for the image
+     * @param iamgeID   the ID of the image to update
+     */
     @PutMapping(value = "")
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     public void updateImage(@RequestParam("file") MultipartFile file, @RequestParam("altText") String altText, @RequestParam("iamgeID") String iamgeID) {
@@ -74,17 +94,40 @@ public class ImageController {
         }
     }
 
+    /**
+     * Endpoint to delete an image.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     *
+     * @param id        the ID of the image to delete
+     * @param imageName the name of the image file to delete
+     * @throws IOException if an I/O error occurs
+     */
     @DeleteMapping("")
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     public void deleteImage(@RequestParam("id") String id, @RequestParam("imageName") String imageName) throws IOException {
         this.imageService.deleteImage(java.util.UUID.fromString(id), Paths.get(UPLOAD_DIR, imageName));
     }
 
+    /**
+     * Endpoint to fetch all images for the authenticated user.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     *
+     * @param userDetails the authenticated user's details
+     * @return a list of ImageBO objects
+     */
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ImageBO> getImages(@AuthenticationPrincipal UserDetails userDetails) {
         return this.imageService.findAll(userDetails.getUsername());
     }
 
+    /**
+     * Endpoint to fetch and display an image by its name.
+     * This endpoint is unsecured and can be accessed without authentication.
+     *
+     * @param imageName the name of the image file to retrieve
+     * @return ResponseEntity containing the image bytes and appropriate headers, or NOT_FOUND status if the image does not exist
+     * @throws IOException if an I/O error occurs while reading the image file
+     */
     @GetMapping("/unsecured/display/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable("imageName") String imageName) throws IOException {
         Path imagePath = Paths.get(UPLOAD_DIR, imageName);

@@ -11,8 +11,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/** * Mapper class for converting between Order entity and OrderBO model.
+ */
 public class OrderMapper {
 
+    /**     * Maps an OrderBO object to an Order entity.
+     *
+     * @param orderBO the OrderBO object to be mapped
+     * @return the mapped Order entity
+     */
     public Order mapDAO(OrderBO orderBO) {
         Order order = new Order();
         order.setId(orderBO.getId());
@@ -28,6 +35,13 @@ public class OrderMapper {
         return order;
     }
 
+    /**     * Maps an Order entity and its associated OrderProductEntities to an OrderBO object.
+     *
+     * @param order                the Order entity to be mapped
+     * @param orderProductEntities the list of associated OrderProductEntities
+     * @param productRepository    the ProductRepository for fetching product details
+     * @return the mapped OrderBO object
+     */
     public OrderBO mapBO(Order order, List<OrderProductEntity> orderProductEntities, ProductRepository productRepository){
         OrderBO orderBO = new OrderBO();
         orderBO.setId(order.getId());

@@ -24,6 +24,10 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing orders.
+ * Provides methods for adding, editing, and retrieving orders.
+ */
 @Service
 public class OrderService {
 
@@ -43,6 +47,13 @@ public class OrderService {
         this.paymentService = paymentService;
     }
 
+    /**
+     * Adds a new order.
+     *
+     * @param orderBO  the order information to add
+     * @param vendorId the ID of the vendor associated with the order
+     * @param userId   the ID of the user placing the order
+     */
     @Transactional
     public void addOrder(OrderBO orderBO, UUID vendorId, String userId) {
 
@@ -76,16 +87,38 @@ public class OrderService {
         this.paymentService.createPayment(payment);
     }
 
+    /**
+     * Edits the status of an existing order.
+     *
+     * @param uuid   the ID of the order to edit
+     * @param status the new status for the order
+     */
     public void editOrderStatus(UUID uuid, OrderStatus status) {
         Order order = this.orderRepository.findById(uuid).orElseThrow(() -> new NoOrderFound("Order not found"));
         order.setOrderStatus(status);
         this.orderRepository.save(order);
     }
 
+    /**
+     * Retrieves all orders for a specific vendor with pagination.
+     *
+     * @param vendorId the ID of the vendor whose orders are to be retrieved
+     * @param pageNo   the page number for pagination
+     * @param size     the number of records per page
+     * @return a list of OrderBO objects representing the vendor's orders
+     */
     public List<OrderBO> getAllOrder(UUID vendorId, int pageNo, int size) {
         return this.orderRepository.findByVendorId(vendorId, PageRequest.of(pageNo, size)).stream().map(order -> new OrderMapper().mapBO(order, this.orderProductRepository.findAllByOrderId(order.getId()), this.productRepository)).collect(Collectors.toList());
     }
 
+    /**
+     * Retrieves all orders for a specific user with pagination.
+     *
+     * @param userId the ID of the user whose orders are to be retrieved
+     * @param pageNo the page number for pagination
+     * @param size   the number of records per page
+     * @return a list of OrderBO objects representing the user's orders
+     */
     public List<OrderBO> getAllOrderByUserId(String userId, int pageNo, int size) {
         return this.orderRepository.findByUserId(userId, PageRequest.of(pageNo, size)).stream().map(order -> new OrderMapper().mapBO(order, this.orderProductRepository.findAllByOrderId(order.getId()), this.productRepository)).collect(Collectors.toList());
     }

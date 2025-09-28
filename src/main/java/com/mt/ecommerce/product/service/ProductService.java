@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/** * Service class for managing products.
+ * Provides methods for adding, updating, deleting, and retrieving products.
+ */
 @Service
 public class ProductService {
 
@@ -31,6 +34,12 @@ public class ProductService {
         this.imageRepository = imageRepository;
     }
 
+    /**
+     * Updates an existing product.
+     *
+     * @param productBO the product information to update
+     * @param userName  the username of the user updating the product
+     */
     @Transactional
     public void updateProduct(ProductBO productBO, String userName) {
         Optional<Product> productOptional = this.productRepository.findById(productBO.getId());
@@ -61,6 +70,12 @@ public class ProductService {
     }
 
 
+    /** * Saves a new product.
+     *
+     * @param productBO the product information to save
+     * @param userName  the username of the user saving the product
+     * @return the saved ProductBO with generated ID
+     */
     @Transactional
     public ProductBO saveProduct(ProductBO productBO, String userName) {
         Product product = new Product();
@@ -90,6 +105,10 @@ public class ProductService {
         return productBO;
     }
 
+    /** * Deletes a product by its ID.
+     *
+     * @param productId the ID of the product to delete
+     */
     @Transactional
     public void deleteProduct(UUID productId) {
         Optional<Product> productOptional = this.productRepository.findById(productId);
@@ -99,6 +118,13 @@ public class ProductService {
         this.productRepository.delete(productOptional.get());
     }
 
+    /** * Retrieves products for a specific vendor with pagination.
+     *
+     * @param vendorId the ID of the vendor whose products are to be retrieved
+     * @param pageNo   the page number for pagination
+     * @param size     the number of records per page
+     * @return a list of ProductBO objects representing the vendor's products
+     */
     public List<ProductBO> getProduct(UUID vendorId,  int pageNo, int size) {
         return this.productRepository
                 .findAllByVendorID(vendorId,  org.springframework.data.domain.PageRequest.of(pageNo, size))
@@ -137,6 +163,14 @@ public class ProductService {
     }
 
 
+    /** * Retrieves products for a specific vendor and category with pagination.
+     *
+     * @param vendorId   the ID of the vendor whose products are to be retrieved
+     * @param categoryId the ID of the category to filter products
+     * @param pageNo     the page number for pagination
+     * @param size       the number of records per page
+     * @return a list of ProductBO objects representing the vendor's products in the specified category
+     */
     public List<ProductBO> getProduct(UUID vendorId, UUID categoryId,  int pageNo, int size) {
         return this.productRepository
                 .findAll()

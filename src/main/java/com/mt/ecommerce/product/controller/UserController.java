@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller for managing user-related operations.
+ * Provides endpoints for validating user roles and fetching user-specific data.
+ */
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -23,19 +27,38 @@ public class UserController {
         this.service = service;
     }
 
+    /**
+     * Endpoint to validate if the authenticated user has either ROLE_VENDOR or ROLE_ADMIN.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     */
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @GetMapping("/vendor")
     public void validVendorOrAdminUser(){}
 
+    /**
+     * Endpoint to validate if the authenticated user has ROLE_ADMIN.
+     * Accessible only by users with ROLE_ADMIN.
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @GetMapping("/admin")
     public void validAdminUser(){}
 
+    /**
+     * Endpoint to validate if the authenticated user has ROLE_USER.
+     * Accessible only by users with ROLE_USER.
+     */
     @GetMapping("")
     public void validateUserRole(){
 
     }
 
+    /**
+     * Endpoint to fetch the store information associated with the authenticated vendor user.
+     * Accessible by users with ROLE_VENDOR or ROLE_ADMIN.
+     *
+     * @param userDetails the authenticated user's details
+     * @return ResponseEntity containing the store information or an error message
+     */
     @PreAuthorize("hasAnyAuthority('ROLE_VENDOR', 'ROLE_ADMIN')")
     @GetMapping(value = "/getStore", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> authenticateAndGetToken(@AuthenticationPrincipal UserDetails userDetails) {

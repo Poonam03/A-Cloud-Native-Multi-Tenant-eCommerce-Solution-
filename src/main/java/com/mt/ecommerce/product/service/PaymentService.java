@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class for managing payments.
+ * Provides methods for retrieving and creating payments.
+ */
 @Service
 public class PaymentService {
 
@@ -19,6 +23,11 @@ public class PaymentService {
     }
 
 
+    /**     * Retrieves payments for a specific vendor.
+     *
+     * @param vendorId the ID of the vendor whose payments are to be retrieved
+     * @return a list of PaymentBO objects representing the vendor's payments
+     */
     public List<PaymentBO> getPayment(UUID vendorId){
         return this.paymentRepository.findAllByCreditorId(vendorId)
                 .stream().map(payment -> {
@@ -33,6 +42,11 @@ public class PaymentService {
 
     }
 
+    /**     * Creates a new payment.
+     *
+     * @param paymentBO the payment information to create
+     * @return the created PaymentBO object with updated information
+     */
     public PaymentBO createPayment(PaymentBO paymentBO){
         Payment payment = new Payment();
         payment.setAmount(paymentBO.getAmount());
