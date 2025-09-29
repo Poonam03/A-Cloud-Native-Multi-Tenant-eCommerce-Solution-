@@ -5,12 +5,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+/**
+ * Application configuration class for defining beans
+ * and other configurations.
+ */
 @Configuration
 public class AppConfig {
 
-    /*
-     * Password encoder bean (uses BCrypt hashing)
-     * Critical for secure password storage
+    /**
+     * Bean for password encoding using BCrypt.
+     *
+     * @return PasswordEncoder instance
      */
     @Bean
     public PasswordEncoder passwordEncoder() {

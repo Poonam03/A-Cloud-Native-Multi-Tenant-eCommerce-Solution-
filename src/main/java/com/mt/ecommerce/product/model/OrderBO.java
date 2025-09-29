@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/** * Represents an order in the e-commerce system.
+ */
 public class OrderBO {
 
     public OrderBO() {

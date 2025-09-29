@@ -2,7 +2,8 @@ package com.mt.ecommerce.product.model;
 
 import java.util.UUID;
 
-
+/** * Represents an image associated with a product or category.
+ */
 public class ImageBO {
 
     public ImageBO() {

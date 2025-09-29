@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/** * Entity class representing a Payment in the e-commerce system.
+ */
 @Entity
 @Table(name = "payment_mt_t")
 public class Payment {

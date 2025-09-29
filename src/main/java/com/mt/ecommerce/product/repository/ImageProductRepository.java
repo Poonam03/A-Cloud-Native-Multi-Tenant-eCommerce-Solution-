@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
+/** * Repository interface for managing ImageProduct entities.
+ */
 @Repository
 public interface ImageProductRepository extends JpaRepository<ImageProduct , UUID> {
 }

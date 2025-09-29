@@ -12,6 +12,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "category_mt_t")
 
+/**
+ * Entity class representing a Category in the e-commerce system.
+ */
 public class Category {
 
     @Id

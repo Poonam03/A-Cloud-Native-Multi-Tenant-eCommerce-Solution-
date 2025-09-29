@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
+/** * Entity class representing the association between Users and Vendors.
+ */
 @Table(name = "user_vendor_mt_t")
 @Entity
 public class UserVendor {

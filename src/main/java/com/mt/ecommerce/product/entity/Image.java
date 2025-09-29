@@ -7,6 +7,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/** * Entity class representing an Image in the e-commerce system.
+ */
 @Entity
 @Table(name = "image_mt_t")
 public class Image {

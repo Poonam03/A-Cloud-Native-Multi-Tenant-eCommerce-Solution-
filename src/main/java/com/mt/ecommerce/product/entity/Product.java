@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+/** * Entity class representing a Product in the e-commerce system.
+ */
 @Entity
 @Table(name = "product_mt_t")
 public class Product {

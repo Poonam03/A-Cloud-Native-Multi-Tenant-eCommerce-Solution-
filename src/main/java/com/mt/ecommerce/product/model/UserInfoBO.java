@@ -5,6 +5,8 @@ import com.mt.ecommerce.product.entity.UserVendor;
 import java.util.List;
 import java.util.UUID;
 
+/** * Represents user information in the e-commerce system.
+ */
 public class UserInfoBO {
     public UserInfoBO() {
     }

@@ -2,6 +2,8 @@ package com.mt.ecommerce.product.model;
 
 import java.util.UUID;
 
+/** * Represents a payment transaction associated with an order.
+ */
 public class PaymentBO {
 
     private UUID id;

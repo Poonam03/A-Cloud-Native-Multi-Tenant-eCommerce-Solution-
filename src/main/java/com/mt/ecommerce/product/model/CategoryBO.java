@@ -3,6 +3,8 @@ package com.mt.ecommerce.product.model;
 import java.util.List;
 import java.util.UUID;
 
+/** * Represents a category in the e-commerce system.
+ */
 public class CategoryBO {
 
     private String name;

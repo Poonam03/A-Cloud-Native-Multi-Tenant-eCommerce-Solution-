@@ -6,6 +6,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+/** * Entity class representing the association between Orders and Products.
+ */
 @Entity
 @Table(name = "order_product_mt_t")
 public class OrderProductEntity {

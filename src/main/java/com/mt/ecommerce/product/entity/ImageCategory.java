@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
+/** * Entity class representing the association between Images and Categories.
+ */
 @Entity
 @Table(name = "image_category_mt_t")
 public class ImageCategory {

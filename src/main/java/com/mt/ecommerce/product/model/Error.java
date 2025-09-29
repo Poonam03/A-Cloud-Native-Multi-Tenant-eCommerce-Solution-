@@ -1,5 +1,7 @@
 package com.mt.ecommerce.product.model;
 
+/** * Represents an error with an error code and message.
+ */
 public class Error {
 
     int errorCode;

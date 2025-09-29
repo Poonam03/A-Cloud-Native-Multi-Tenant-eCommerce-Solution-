@@ -1,5 +1,7 @@
 package com.mt.ecommerce.product.model;
 
+/** * Represents an authentication request containing username and password.
+ */
 public class AuthRequest {
 
     public AuthRequest() {

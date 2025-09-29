@@ -2,6 +2,8 @@ package com.mt.ecommerce.product.model;
 
 import java.util.UUID;
 
+/** * Represents a vendor in the e-commerce system.
+ */
 public class VendorBO {
 
     public VendorBO() {

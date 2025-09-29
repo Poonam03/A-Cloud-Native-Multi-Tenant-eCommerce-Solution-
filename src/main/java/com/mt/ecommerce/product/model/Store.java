@@ -2,6 +2,8 @@ package com.mt.ecommerce.product.model;
 
 import java.util.List;
 
+/** * Represents a store containing user information, a list of vendors, and an authentication token.
+ */
 public class Store {
 
     public Store() {
