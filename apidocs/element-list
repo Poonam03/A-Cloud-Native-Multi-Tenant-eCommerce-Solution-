@@ -1,0 +1,10 @@
+com.mt.ecommerce.product
+com.mt.ecommerce.product.config
+com.mt.ecommerce.product.controller
+com.mt.ecommerce.product.entity
+com.mt.ecommerce.product.exception
+com.mt.ecommerce.product.filter
+com.mt.ecommerce.product.mapper
+com.mt.ecommerce.product.model
+com.mt.ecommerce.product.repository
+com.mt.ecommerce.product.service
